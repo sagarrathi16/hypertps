@@ -6,7 +6,6 @@
 [![Moonshot Kimi K3.1 Pro](https://img.shields.io/badge/Model-Kimi%20K3.1%20Pro%20(2.8T%20MoE)-purple.svg)](https://moonshot.ai)
 
 > Built for the **Cerebras x Kimi K3.1 Pro Hackathon**  
-> Winner Target: **$1,000 Prompt TPS Bounty** & **$4,000 Social Audience Choice**
 
 ---
 
