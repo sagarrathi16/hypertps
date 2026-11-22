@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hypertps"
+version = "0.1.0"
+description = "Hardware-Resonant Prompt Acceleration Suite & OpenClaw Plugin for Cerebras and Moonshot Kimi K3.1 Pro"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Hackathon Builder" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.scripts]
+hypertps = "hypertps.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

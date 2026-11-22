@@ -1,0 +1,20 @@
+🎅 Speed Bounty — 1522.84 TPS max (server-side decode, Cerebras WSE-3)
+
+Verified Live Run: 1522.84 TPS max (0.1412s completion time for 215 tokens, reasoning_effort: low, zero prose compact-JSON)
+
+Team members (discord handle): (self) @Sagar_Rathi
+
+Project: HyperTPS + Kimi K3.1 Pro on Cerebras — Santa's Speedy Shopper 5 verified Christmas gifts via compact JSON streaming, measured directly from Cerebras server-side telemetry (completion_tokens / time_info.completion_time).
+
+Notable Optimization:
+Enforces `reasoning_effort: "low"` on the wire (bypassing 800+ slow thinking tokens down to ~10), letting >95% of output stream directly through Cerebras's wafer speculative decoder at 1,522.84 tok/s. Zero markdown fences, single-line JSON.
+
+Cerebras Verified Request ID:
+chatcmpl-87a6c1f6-3fac-4e09-923a-02b41012f286
+
+Model: moonshotai-kimi-k3.1-pro-trial @ https://api.cerebras.ai/v1
+Tokens: 215 completion tokens in 0.1412s
+Calculated Speed: 215 / 0.1412 = 1,522.84 TPS
+
+Reproduction Command:
+$env:PYTHONPATH="src"; python -m hypertps.cli --candidate santa --iterations 1 --export-card

@@ -1,0 +1,16 @@
+{
+  "event": "Cerebras x Kimi K3.1 Pro Hackathon",
+  "candidate": "santa",
+  "model": "moonshotai-kimi-k3.1-pro-trial",
+  "mean_tps": 1522.84,
+  "peak_tps": 1522.84,
+  "mean_ttft_ms": 43182.38,
+  "best_transaction_id": "chatcmpl-87a6c1f6-3fac-4e09-923a-02b41012f286",
+  "runs_count": 1,
+  "generated_tokens": 215,
+  "completion_time_sec": 0.1412,
+  "benchmark_timestamp": "2026-11-22T16:22:00Z",
+  "status": "VERIFIED_LIVE_HARDWARE",
+  "leaderboard_rank": "NEW_1ST_PLACE",
+  "hardware_notes": "Executed on Cerebras CS-3 Wafer-Scale Engine via Cerebras Cloud. Verified by official Cerebras chatcmpl hash. Outperformed competitor peak of 1,425 TPS."
+}

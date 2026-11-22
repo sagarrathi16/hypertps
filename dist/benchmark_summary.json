@@ -1,0 +1,11 @@
+{
+  "event": "Cerebras x Kimi K3.1 Pro Hackathon",
+  "model": "moonshotai-kimi-k3.1-pro-trial",
+  "mean_tps": 1346.74,
+  "peak_tps": 1346.74,
+  "mean_ttft_ms": 2490.41,
+  "best_transaction_id": "chatcmpl-30f2603c-444f-4729-98f7-303e84b9883d",
+  "runs_count": 1,
+  "generated_tokens": 212,
+  "completion_time_sec": 0.1574
+}

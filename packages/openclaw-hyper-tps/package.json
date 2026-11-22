@@ -1,0 +1,12 @@
+{
+  "name": "@openclaw/hyper-tps",
+  "version": "0.1.0",
+  "description": "Hardware-Resonant Prompt Acceleration Middleware for OpenClaw on Cerebras Inference",
+  "main": "index.js",
+  "keywords": ["openclaw", "cerebras", "kimi", "inference", "tps", "acceleration"],
+  "author": "HyperTPS Hackathon Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "@openclaw/core": ">=0.1.0"
+  }
+}

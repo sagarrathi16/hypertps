@@ -1,0 +1,28 @@
+# Environment & Secrets
+.env
+*.env
+.env.*
+secrets.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+*.egg-info/
+# Allow verified distribution artifacts
+!dist/*.json
+!dist/*.md
+!dist/*.txt
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
