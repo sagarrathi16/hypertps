@@ -58,6 +58,33 @@ class TestHyperTPS(unittest.TestCase):
         self.assertEqual(payload["reasoning_effort"], "low")
         self.assertIn("Santa's Speedy Shopper", payload["messages"][1]["content"])
 
+    def test_bounty_prompt_engine_santa_live(self):
+        """Verifies Candidate Santa Live formulation with live scraped real products."""
+        mock_products = [
+            {"name": "Wool Runner Mizzles", "url": "https://www.allbirds.com/products/mizzles", "price": "$125.00", "store": "Allbirds"},
+            {"name": "Crest Hoodie", "url": "https://www.gymshark.com/products/hoodie", "price": "$50.00", "store": "Gymshark"},
+            {"name": "The Classics 5.5", "url": "https://www.chubbiesshorts.com/products/shorts", "price": "$68.00", "store": "Chubbies"},
+            {"name": "Ojai Jacket", "url": "https://www.taylorstitch.com/products/jacket", "price": "$188.00", "store": "Taylor Stitch"},
+            {"name": "Egyptian Cotton Socks", "url": "https://kotn.com/products/socks", "price": "$15.00", "store": "Kotn"},
+        ]
+        payload = BountyPromptEngine.get_payload("santa_live", max_tokens=1024, scraped_products=mock_products)
+        self.assertEqual(payload["temperature"], 0.0)
+        self.assertEqual(payload["reasoning_effort"], "low")
+        user_content = payload["messages"][1]["content"]
+        self.assertIn("https://www.allbirds.com/products/mizzles", user_content)
+        self.assertIn("https://www.gymshark.com/products/hoodie", user_content)
+        self.assertIn("Verified Live Shopping Catalog", user_content)
+
+    def test_live_retail_scraper_format(self):
+        """Verifies that LiveRetailCatalogSearcher returns valid structure."""
+        from hypertps.scraper import LiveRetailCatalogSearcher
+        searcher = LiveRetailCatalogSearcher()
+        prod = searcher.search_store_product("running shoes", store_idx=0)
+        self.assertIn("name", prod)
+        self.assertIn("url", prod)
+        self.assertTrue(prod["url"].startswith("http"))
+        self.assertIn("store", prod)
+
     def test_telemetry_parser_accurate_tps(self):
         """Verifies exact generation TPS calculation from Cerebras time_info payload."""
         mock_response = {

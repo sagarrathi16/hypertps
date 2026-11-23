@@ -94,3 +94,77 @@ class CerebrasClient:
                 raise RuntimeError(f"Unexpected error during inference request: {e}")
 
         raise last_error or RuntimeError("Failed to complete request after retries")
+
+    def stream_with_speed_patch(
+        self,
+        messages: list,
+        model: Optional[str] = None,
+        temperature: float = 0.0,
+        reasoning_effort: str = "low",
+    ) -> Dict[str, Any]:
+        """
+        Streams completions and measures TPS using the official openclaw-speed-patch formula:
+        TPS = (token_count - 1) / (t_last_token - t_first_token)
+        """
+        self.config.validate_for_live()
+
+        target_model = model or self.config.model
+        url = f"{self.config.base_url.rstrip('/')}/chat/completions"
+
+        payload = {
+            "model": target_model,
+            "messages": messages,
+            "stream": True,
+            "temperature": temperature,
+            "reasoning_effort": reasoning_effort,
+        }
+
+        data_bytes = json.dumps(payload).encode("utf-8")
+        headers = {
+            "Authorization": f"Bearer {self.config.api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "HyperTPS-SpeedPatch/0.1.0",
+        }
+
+        req = urllib.request.Request(url, data=data_bytes, headers=headers, method="POST")
+
+        first_token_time = None
+        last_token_time = None
+        token_count = 0
+        collected_tokens = []
+
+        with urllib.request.urlopen(
+            req, context=self.ssl_context, timeout=self.config.timeout_sec
+        ) as resp:
+            for line in resp:
+                line_str = line.decode("utf-8", errors="ignore").strip()
+                if not line_str or line_str == "data: [DONE]":
+                    continue
+                if line_str.startswith("data: "):
+                    chunk_json = line_str[6:]
+                    try:
+                        chunk = json.loads(chunk_json)
+                        choices = chunk.get("choices", [])
+                        if not choices:
+                            continue
+                        delta = choices[0].get("delta", {})
+                        content = delta.get("content", "")
+                        if content:
+                            now = time.perf_counter()
+                            if first_token_time is None:
+                                first_token_time = now
+                            last_token_time = now
+                            token_count += 1
+                            collected_tokens.append(content)
+                    except json.JSONDecodeError:
+                        continue
+
+        duration = (last_token_time - first_token_time) if (last_token_time and first_token_time) else 0.0
+        tps = ((token_count - 1) / duration) if (duration > 0 and token_count > 1) else 0.0
+
+        return {
+            "text": "".join(collected_tokens),
+            "token_count": token_count,
+            "duration_sec": duration,
+            "speed_patch_tps": tps,
+        }

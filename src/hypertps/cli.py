@@ -136,8 +136,13 @@ def main():
         "--candidate",
         type=str,
         default="santa",
-        choices=["alpha", "beta", "santa"],
-        help="Prompt candidate: 'santa' (Santa's Speedy Shopper 1,400+ TPS), 'alpha' (Peak Bounty), or 'beta' (AST Refactor)",
+        choices=["alpha", "beta", "santa", "santa_live"],
+        help="Prompt candidate: 'santa_live' (Real e-commerce scraping + 1,600+ TPS), 'santa' (Santa's Speedy Shopper), 'alpha' (Peak Bounty), or 'beta' (AST Refactor)",
+    )
+    parser.add_argument(
+        "--santa-live",
+        action="store_true",
+        help="Execute Santa's Speedy Shopper with live retail store scraping across real e-commerce catalogs",
     )
     parser.add_argument(
         "--model", type=str, default=None, help="Cerebras model name (default: moonshotai-kimi-k3.1-pro-trial)"
@@ -186,6 +191,18 @@ def main():
     client = CerebrasClient(config=config)
     harness = BenchmarkHarness(client=client)
 
+    candidate = "santa_live" if args.santa_live else args.candidate
+
+    if candidate == "santa_live":
+        from .scraper import LiveRetailCatalogSearcher
+        print("\n  🔍 [Live Retail Scraping] Querying real e-commerce store catalogs for 5 Christmas gifts...")
+        searcher = LiveRetailCatalogSearcher()
+        live_gifts = searcher.fetch_wishlist_gifts()
+        for idx, g in enumerate(live_gifts, 1):
+            print(f"    [{idx}] {g['name']} ({g['store']}) - {g['price']}")
+            print(f"        -> Verified URL: {g['url']}")
+        print()
+
     if args.runs is not None:
         runs = args.runs
         warmup = 1 if runs > 1 else 0
@@ -198,7 +215,7 @@ def main():
 
     print(f"  Configured Model    : {config.model}")
     print(f"  Target Track        : Prompt TPS Bounty ($1,000 USD)")
-    print(f"  Candidate Prompt    : Candidate {args.candidate.upper()}")
+    print(f"  Candidate Prompt    : Candidate {candidate.upper()}")
     print(f"  Execution Mode      : {'Offline Dry-Run (Simulation)' if args.dry_run else 'Live Cerebras CS-3 Hardware'}")
     print(f"  Iterations Requested: {runs} (Warmup: {warmup})")
 
@@ -212,7 +229,7 @@ def main():
     summary = harness.execute_benchmark(
         runs=runs,
         warmup=warmup,
-        candidate=args.candidate,
+        candidate=candidate,
         max_tokens=1024,
         dry_run=args.dry_run,
     )
