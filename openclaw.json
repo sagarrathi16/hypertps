@@ -1,0 +1,28 @@
+{
+  "$schema": "https://openclaw.ai/schema/openclaw.json",
+  "name": "santa-speedy-shopper",
+  "version": "1.0.0",
+  "description": "Santa's Speedy Shopper on Cerebras Kimi K3.1 Pro via OpenClaw",
+  "provider": {
+    "name": "cerebras",
+    "baseUrl": "https://api.cerebras.ai/v1",
+    "apiKeyEnv": "CEREBRAS_API_KEY",
+    "defaultModel": "moonshotai-kimi-k3.1-pro-trial"
+  },
+  "agent": {
+    "systemPrompt": "You are Santa's Speedy Shopper. Find 5 real Christmas gifts from real retail sites with working product links.",
+    "temperature": 0.0,
+    "reasoningEffort": "low",
+    "tools": [
+      "packages/openclaw-hyper-tps/index.js:SantaShopperLiveSearchTool"
+    ],
+    "plugins": [
+      "packages/openclaw-hyper-tps/index.js:HyperTPSPlugin"
+    ]
+  },
+  "speedPatch": {
+    "enabled": true,
+    "metric": "tps_streaming",
+    "formula": "(output_tokens - 1) / (t_last - t_first)"
+  }
+}
